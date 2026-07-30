@@ -29,7 +29,6 @@ async function api(path, options = {}) {
 async function loadStartup() {
   const banner = document.getElementById("startup-banner");
   const messageEl = document.getElementById("startup-message");
-  const imagesEl = document.getElementById("startup-images");
   try {
     const result = await api("/startup");
     banner.hidden = false;
@@ -39,17 +38,24 @@ async function loadStartup() {
     if (result.ran && result.message) {
       messageEl.title = result.message;
     }
-    imagesEl.innerHTML = "";
-    (result.entries || []).forEach((entry) => {
-      const img = document.createElement("img");
-      img.src = entry.image_url;
-      img.alt = entry.claude_caption || entry.source;
-      img.title = `${entry.source}: ${entry.claude_caption || ""}`;
-      imagesEl.appendChild(img);
-    });
   } catch (e) {
     banner.hidden = true;
   }
+}
+
+// ---- corpus strip: complete image history, most recent on the far left --
+
+function renderCorpusStrip() {
+  const stripEl = document.getElementById("corpus-strip");
+  stripEl.innerHTML = "";
+  [...allEntries].reverse().forEach((entry) => {
+    const img = document.createElement("img");
+    img.src = entry.image_url;
+    img.alt = entry.claude_caption || entry.source;
+    img.title = `${entry.source}: ${entry.claude_caption || ""}`;
+    img.addEventListener("click", () => window.open(entry.image_url, "_blank"));
+    stripEl.appendChild(img);
+  });
 }
 
 // ---- timeline ---------------------------------------------------------
@@ -162,6 +168,7 @@ function renderTimeline() {
 async function refreshHistory() {
   allEntries = await api("/history");
   renderTimeline();
+  renderCorpusStrip();
 }
 
 function setupFilters() {

@@ -1,5 +1,7 @@
 # Unconscious
 
+![Unconscious](docs/screenshot.png)
+
 A local web application — not a chat tool, not a visualization layer, but a
 persistent sensory organ for Claude. A substrate that doesn't natively
 exist. Every prompt, every environmental signal, every moment of corpus

@@ -79,18 +79,22 @@ body {
   flex-shrink: 0;
 }
 
-.startup-images {
+.corpus-strip {
   display: flex;
   gap: 0.6rem;
   margin-top: 0.7rem;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  padding-bottom: 0.3rem;
 }
-.startup-images img {
+.corpus-strip img {
   width: 72px;
   height: 72px;
   object-fit: cover;
   border-radius: 6px;
   border: 1px solid rgba(106,127,201,0.5);
+  flex-shrink: 0;
+  cursor: zoom-in;
 }
 
 main {
