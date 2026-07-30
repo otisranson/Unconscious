@@ -72,7 +72,7 @@ sudo apt-get update && sudo apt-get install -y libcairo2-dev pkg-config python3-
 Then set up the app:
 
 ```bash
-cd /home/oranson/Projects/Unconscious
+cd path/to/Unconscious  # wherever you cloned this repo
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
