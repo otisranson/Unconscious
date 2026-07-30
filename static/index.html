@@ -1,0 +1,115 @@
+<!--
+Unconscious — A psychotechnical approach to AI
+Copyright 2026 Otis Ranson. Licensed under the Apache License, Version 2.0.
+-->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Unconscious</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <h1>Unconscious</h1>
+      <p class="tagline">a psychotechnical approach to AI</p>
+    </div>
+    <button id="settings-toggle" class="icon-btn" title="Settings">⚙</button>
+  </header>
+
+  <section id="startup-banner" class="startup-banner" hidden>
+    <div class="startup-banner-head">
+      <span class="startup-dot"></span>
+      <span id="startup-message">Waking up…</span>
+    </div>
+    <div id="startup-images" class="startup-images"></div>
+  </section>
+
+  <main>
+    <section class="now-panel">
+      <form id="prompt-form">
+        <textarea id="prompt-input" placeholder="Say something to it…" rows="2"></textarea>
+        <button type="submit" id="prompt-submit">Speak</button>
+      </form>
+      <div id="now-result" class="now-result" hidden>
+        <img id="now-image" alt="Generated image" />
+        <p id="now-caption"></p>
+      </div>
+      <p id="now-status" class="now-status"></p>
+    </section>
+
+    <section class="timeline-section">
+      <div class="timeline-head">
+        <h2>The corpus</h2>
+        <div id="filters" class="filters">
+          <button class="filter-chip active" data-source="">all</button>
+          <button class="filter-chip" data-source="prompt">prompt</button>
+          <button class="filter-chip" data-source="dream">dream</button>
+          <button class="filter-chip" data-source="pressure">pressure</button>
+          <button class="filter-chip" data-source="environment">environment</button>
+          <button class="filter-chip" data-source="system">system</button>
+          <button class="filter-chip" data-source="synthesis">synthesis</button>
+        </div>
+      </div>
+      <div id="timeline" class="timeline"></div>
+    </section>
+  </main>
+
+  <div id="settings-panel" class="settings-panel" hidden>
+    <div class="settings-panel-inner">
+      <div class="settings-head">
+        <h2>Settings</h2>
+        <button id="settings-close" class="icon-btn">×</button>
+      </div>
+
+      <div class="settings-field">
+        <label>Anthropic API key</label>
+        <p class="settings-hint">Required to generate anything. Stored in the local SQLite database, never in this page's source. Changes apply immediately.</p>
+        <div class="settings-current" id="anthropic_api_key-current"></div>
+        <div class="settings-row">
+          <input type="password" id="anthropic_api_key-input" placeholder="sk-ant-…" autocomplete="off" />
+          <button data-key="anthropic_api_key" class="save-btn">Save</button>
+          <button data-key="anthropic_api_key" class="clear-btn">Clear</button>
+        </div>
+      </div>
+
+      <div class="settings-field">
+        <label>OpenWeatherMap API key</label>
+        <p class="settings-hint">Optional. Powers the weather half of the startup ritual's environment pull.</p>
+        <div class="settings-current" id="openweather_api_key-current"></div>
+        <div class="settings-row">
+          <input type="password" id="openweather_api_key-input" placeholder="API key" autocomplete="off" />
+          <button data-key="openweather_api_key" class="save-btn">Save</button>
+          <button data-key="openweather_api_key" class="clear-btn">Clear</button>
+        </div>
+      </div>
+
+      <div class="settings-field">
+        <label>Weather city</label>
+        <p class="settings-hint">e.g. "Portland,US"</p>
+        <div class="settings-current" id="weather_city-current"></div>
+        <div class="settings-row">
+          <input type="text" id="weather_city-input" placeholder="City" autocomplete="off" />
+          <button data-key="weather_city" class="save-btn">Save</button>
+          <button data-key="weather_city" class="clear-btn">Clear</button>
+        </div>
+      </div>
+
+      <div class="settings-field">
+        <label>News RSS feed URL</label>
+        <p class="settings-hint">Optional override. Defaults to a BBC World News feed.</p>
+        <div class="settings-current" id="news_rss_url-current"></div>
+        <div class="settings-row">
+          <input type="text" id="news_rss_url-input" placeholder="https://…" autocomplete="off" />
+          <button data-key="news_rss_url" class="save-btn">Save</button>
+          <button data-key="news_rss_url" class="clear-btn">Clear</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

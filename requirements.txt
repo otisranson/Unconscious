@@ -1,0 +1,6 @@
+fastapi>=0.115
+uvicorn[standard]>=0.30
+anthropic>=0.40
+pycairo>=1.26
+psutil>=6.0
+requests>=2.32

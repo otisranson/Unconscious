@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env
+unconscious.db
+images/*.png
+!images/.gitkeep
