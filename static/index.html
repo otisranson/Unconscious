@@ -1,5 +1,5 @@
 <!--
-Unconscious — A psychotechnical approach to AI
+Unconscious
 Copyright 2026 Otis Ranson. Licensed under the Apache License, Version 2.0.
 -->
 <!doctype html>
@@ -14,7 +14,6 @@ Copyright 2026 Otis Ranson. Licensed under the Apache License, Version 2.0.
   <header class="topbar">
     <div class="brand">
       <h1>Unconscious</h1>
-      <p class="tagline">a psychotechnical approach to AI</p>
     </div>
     <button id="settings-toggle" class="icon-btn" title="Settings">⚙</button>
   </header>
@@ -66,47 +65,41 @@ Copyright 2026 Otis Ranson. Licensed under the Apache License, Version 2.0.
 
       <div class="settings-field">
         <label>Anthropic API key</label>
-        <p class="settings-hint">Required to generate anything. Stored in the local SQLite database, never in this page's source. Changes apply immediately.</p>
-        <div class="settings-current" id="anthropic_api_key-current"></div>
+        <p class="settings-hint">Required to generate anything. Stored in the local SQLite database, never in this page's source. Changes apply immediately. Save with the field empty to clear it.</p>
         <div class="settings-row">
           <input type="password" id="anthropic_api_key-input" placeholder="sk-ant-…" autocomplete="off" />
           <button data-key="anthropic_api_key" class="save-btn">Save</button>
-          <button data-key="anthropic_api_key" class="clear-btn">Clear</button>
         </div>
       </div>
 
       <div class="settings-field">
         <label>OpenWeatherMap API key</label>
         <p class="settings-hint">Optional. Powers the weather half of the startup ritual's environment pull.</p>
-        <div class="settings-current" id="openweather_api_key-current"></div>
         <div class="settings-row">
           <input type="password" id="openweather_api_key-input" placeholder="API key" autocomplete="off" />
           <button data-key="openweather_api_key" class="save-btn">Save</button>
-          <button data-key="openweather_api_key" class="clear-btn">Clear</button>
         </div>
       </div>
 
       <div class="settings-field">
         <label>Weather city</label>
         <p class="settings-hint">e.g. "Portland,US"</p>
-        <div class="settings-current" id="weather_city-current"></div>
         <div class="settings-row">
           <input type="text" id="weather_city-input" placeholder="City" autocomplete="off" />
           <button data-key="weather_city" class="save-btn">Save</button>
-          <button data-key="weather_city" class="clear-btn">Clear</button>
         </div>
       </div>
 
       <div class="settings-field">
         <label>News RSS feed URL</label>
         <p class="settings-hint">Optional override. Defaults to a BBC World News feed.</p>
-        <div class="settings-current" id="news_rss_url-current"></div>
         <div class="settings-row">
           <input type="text" id="news_rss_url-input" placeholder="https://…" autocomplete="off" />
           <button data-key="news_rss_url" class="save-btn">Save</button>
-          <button data-key="news_rss_url" class="clear-btn">Clear</button>
         </div>
       </div>
+
+      <div id="env-test-results" class="settings-test-results" hidden></div>
     </div>
   </div>
 

@@ -1,5 +1,5 @@
 """
-Unconscious — A psychotechnical approach to AI
+Unconscious
 Copyright 2026 Otis Ranson. Licensed under the Apache License, Version 2.0.
 
 pressure.py — corpus state evaluation. Reads recent entries and estimates

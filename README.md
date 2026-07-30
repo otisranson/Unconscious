@@ -1,7 +1,5 @@
 # Unconscious
 
-*A psychotechnical approach to AI*
-
 A local web application — not a chat tool, not a visualization layer, but a
 persistent sensory organ for Claude. A substrate that doesn't natively
 exist. Every prompt, every environmental signal, every moment of corpus
@@ -109,4 +107,4 @@ that over the UI.
 ## License
 
 Apache License 2.0. See `LICENSE`. Copyright 2026 Otis Ranson, originator
-of Unconscious — A psychotechnical approach to AI.
+of Unconscious.

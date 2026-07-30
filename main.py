@@ -1,5 +1,5 @@
 """
-Unconscious — A psychotechnical approach to AI
+Unconscious
 Copyright 2026 Otis Ranson. Licensed under the Apache License, Version 2.0.
 
 main.py — FastAPI app: endpoints, static file serving, and the one-time
@@ -75,14 +75,6 @@ def _entry_to_json(entry: dict) -> dict:
     }
 
 
-def _mask(value: str) -> str:
-    if not value:
-        return ""
-    if len(value) <= 4:
-        return "*" * len(value)
-    return f"{'*' * (len(value) - 4)}{value[-4:]}"
-
-
 # ---- generation endpoints -----------------------------------------------
 
 @app.post("/prompt")
@@ -143,7 +135,8 @@ def get_history(source: Optional[str] = None):
 
 @app.get("/startup")
 def get_startup_result():
-    return getattr(app.state, "startup_result", {"ran": False, "entries": [], "message": ""})
+    result = getattr(app.state, "startup_result", {"ran": False, "entries": [], "message": ""})
+    return {**result, "entries": [_entry_to_json(e) for e in result["entries"]]}
 
 
 # ---- grammar endpoints ----------------------------------------------------
@@ -163,13 +156,14 @@ def put_grammar(body: GrammarRequest):
 
 
 # ---- settings endpoints (live-editable API keys) --------------------------
+#
+# GET returns the raw current values so the UI can populate its text boxes
+# directly. PUT always overwrites: a non-empty value sets it, an empty
+# value clears it — the field you send is the field's new state, full stop.
 
 @app.get("/settings")
 def get_settings():
-    return {
-        key: {"set": bool(db.get_setting(key)), "preview": _mask(db.get_setting(key) or "")}
-        for key in SETTINGS_KEYS
-    }
+    return {key: db.get_setting(key, "") for key in SETTINGS_KEYS}
 
 
 @app.put("/settings")
@@ -178,15 +172,21 @@ def put_settings(body: SettingsRequest):
     for key, value in data.items():
         if value:
             db.set_setting(key, value)
+        else:
+            db.delete_setting(key)
     return get_settings()
 
 
-@app.delete("/settings/{key}")
-def delete_setting(key: str):
-    if key not in SETTINGS_KEYS:
-        raise HTTPException(status_code=404, detail=f"unknown setting: {key}")
-    db.delete_setting(key)
-    return get_settings()
+@app.get("/settings/test")
+def test_environment_signals():
+    """Live-checks the weather API and RSS feed directly — no Claude call,
+    no cost — so a bad key/city/URL can be caught right after saving it."""
+    weather = startup.weather_text()
+    news = startup.news_text()
+    return {
+        "weather": weather or "Not configured — add an OpenWeatherMap key and city above.",
+        "news": news or "No headlines reachable.",
+    }
 
 
 # ---- static frontend -------------------------------------------------------

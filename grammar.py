@@ -1,5 +1,5 @@
 """
-Unconscious — A psychotechnical approach to AI
+Unconscious
 Copyright 2026 Otis Ranson. Licensed under the Apache License, Version 2.0.
 
 grammar.py — versioned visual grammar management. The Rebis principle
@@ -39,12 +39,25 @@ You respond by calling the render_image tool with two fields:
 two integers WIDTH and HEIGHT already exist in scope — draw directly onto \
 `ctx`. Do NOT create the ImageSurface, do NOT create the Context, and do \
 NOT write any file — the harness does all of that around your code. You \
-may use `math` and `random`, both already imported. Nothing else is \
-available (no other imports, no file or network access) — write only \
+may use `math`, `random`, `colorsys`, and `itertools`, all already \
+imported — no need to import them yourself, though `import math` etc. is \
+harmless if you do. `colorsys.hls_to_rgb` / `hsv_to_rgb` is how you turn \
+the grammar's hue/saturation/brightness axes into the RGB tuples \
+ctx.set_source_rgb expects — reach for it whenever you're thinking in \
+those terms rather than picking RGB numbers directly. `cairo` itself is \
+also in scope, but only for pattern/gradient work — cairo.LinearGradient \
+(x0, y0, x1, y1) / cairo.RadialGradient(cx0, cy0, r0, cx1, cy1, r1), then \
+pattern.add_color_stop_rgba(offset, r, g, b, a) and ctx.set_source \
+(pattern), plus drawing constants like cairo.OPERATOR_* (with \
+ctx.set_operator), cairo.LINE_CAP_* / LINE_JOIN_* / FILL_RULE_* / \
+EXTEND_* / ANTIALIAS_*, and cairo.Matrix for transforms. Do NOT call \
+cairo.ImageSurface, cairo.Context, or any *Surface constructor — those \
+aren't available and aren't needed; ctx already exists. No other \
+imports, file access, or network access are available — write only \
 drawing code. A typical body sets a background, then paints shapes, \
-lines, and gradients using ctx.set_source_rgb / set_source_rgba, \
-move_to / line_to / curve_to / arc, fill / stroke, paint, and similar \
-pycairo calls.
+lines, and \
+gradients using ctx.set_source_rgb / set_source_rgba, move_to / line_to \
+/ curve_to / arc, fill / stroke, paint, and similar pycairo calls.
 - caption: One to three sentences — your honest interpretation of what you \
 drew and why, true to this exact moment. Not a design rationale. Not a \
 performance of depth. Just what is true.

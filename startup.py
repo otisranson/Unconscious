@@ -1,5 +1,5 @@
 """
-Unconscious — A psychotechnical approach to AI
+Unconscious
 Copyright 2026 Otis Ranson. Licensed under the Apache License, Version 2.0.
 
 startup.py — the startup ritual. Runs exactly once, synchronously, when
@@ -47,7 +47,7 @@ def _system_pulse_text() -> str:
     )
 
 
-def _weather_text() -> str | None:
+def weather_text() -> str | None:
     api_key = db.get_setting("openweather_api_key")
     city = db.get_setting("weather_city")
     if not api_key or not city:
@@ -72,7 +72,7 @@ def _weather_text() -> str | None:
         return f"Weather signal unavailable ({exc})."
 
 
-def _news_text(limit=5) -> str | None:
+def news_text(limit=5) -> str | None:
     rss_url = db.get_setting("news_rss_url") or DEFAULT_NEWS_RSS
     try:
         resp = requests.get(rss_url, timeout=6)
@@ -88,7 +88,7 @@ def _news_text(limit=5) -> str | None:
 
 
 def _environment_text() -> str:
-    parts = [p for p in (_weather_text(), _news_text()) if p]
+    parts = [p for p in (weather_text(), news_text()) if p]
     if not parts:
         return "No external environmental signal was reachable this moment."
     return "\n".join(parts)

@@ -1,5 +1,5 @@
 /*
-Unconscious — A psychotechnical approach to AI
+Unconscious
 Copyright 2026 Otis Ranson. Licensed under the Apache License, Version 2.0.
 */
 
@@ -215,13 +215,14 @@ function setupPromptForm() {
 }
 
 // ---- settings panel -------------------------------------------------------
+// Each field's text box always mirrors the currently stored value. Save
+// always overwrites with exactly what's in the box: type something new and
+// save to change it, clear the box and save to delete it.
 
 async function loadSettings() {
   const settings = await api("/settings");
   SETTINGS_KEYS.forEach((key) => {
-    const currentEl = document.getElementById(`${key}-current`);
-    const info = settings[key];
-    currentEl.textContent = info.set ? `currently set: ${info.preview}` : "not set";
+    document.getElementById(`${key}-input`).value = settings[key] || "";
   });
 }
 
@@ -238,28 +239,38 @@ function setupSettingsPanel() {
     if (e.target === panel) panel.hidden = true;
   });
 
+  const ENV_TEST_KEYS = new Set(["openweather_api_key", "weather_city", "news_rss_url"]);
+
   document.querySelectorAll(".save-btn").forEach((btn) => {
     btn.addEventListener("click", async () => {
       const key = btn.dataset.key;
       const input = document.getElementById(`${key}-input`);
-      if (!input.value.trim()) return;
       await api("/settings", {
         method: "PUT",
         body: JSON.stringify({ [key]: input.value.trim() }),
       });
-      input.value = "";
       await loadSettings();
+      if (ENV_TEST_KEYS.has(key)) await testEnvironmentSignals();
     });
   });
+}
 
-  document.querySelectorAll(".clear-btn").forEach((btn) => {
-    btn.addEventListener("click", async () => {
-      const key = btn.dataset.key;
-      if (!confirm(`Clear the saved ${key.replace(/_/g, " ")}?`)) return;
-      await api(`/settings/${key}`, { method: "DELETE" });
-      await loadSettings();
-    });
-  });
+async function testEnvironmentSignals() {
+  const resultsEl = document.getElementById("env-test-results");
+  resultsEl.hidden = false;
+  resultsEl.textContent = "Checking weather and news…";
+  try {
+    const result = await api("/settings/test");
+    resultsEl.innerHTML = "";
+    const weatherLine = document.createElement("p");
+    weatherLine.textContent = `Weather: ${result.weather}`;
+    const newsLine = document.createElement("p");
+    newsLine.textContent = `News: ${result.news}`;
+    resultsEl.appendChild(weatherLine);
+    resultsEl.appendChild(newsLine);
+  } catch (err) {
+    resultsEl.textContent = `Test failed: ${err.message}`;
+  }
 }
 
 // ---- init -----------------------------------------------------------------

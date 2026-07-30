@@ -1,5 +1,5 @@
 """
-Unconscious — A psychotechnical approach to AI
+Unconscious
 Copyright 2026 Otis Ranson. Licensed under the Apache License, Version 2.0.
 
 pipeline.py — the core generation loop: Claude API call -> sandboxed
@@ -88,11 +88,23 @@ def get_client() -> anthropic.Anthropic:
 # ---- sandboxed pycairo execution ----------------------------------------
 
 _RUNNER_TEMPLATE = """\
+import colorsys
+import importlib
+import itertools
 import math
 import random
 import sys
 
 import cairo
+
+SAFE_MODULES = ("math", "random", "colorsys", "itertools")
+
+
+def _restricted_import(name, globals=None, locals=None, fromlist=(), level=0):
+    if name not in SAFE_MODULES:
+        raise ImportError(f"import of {{name!r}} is not permitted here")
+    return importlib.import_module(name)
+
 
 SAFE_NAMES = (
     "abs", "min", "max", "range", "len", "float", "int", "round",
@@ -101,6 +113,32 @@ SAFE_NAMES = (
 )
 _builtins = __builtins__ if isinstance(__builtins__, dict) else vars(__builtins__)
 SAFE_BUILTINS = {{name: _builtins[name] for name in SAFE_NAMES if name in _builtins}}
+SAFE_BUILTINS["__import__"] = _restricted_import
+
+# Only pattern/gradient classes and drawing constants — deliberately not
+# ImageSurface/PDFSurface/SVGSurface/PSSurface/Context, which could create
+# new surfaces backed by arbitrary filesystem paths.
+_SAFE_CAIRO_ATTRS = (
+    "LinearGradient", "RadialGradient", "Matrix",
+    "FILL_RULE_WINDING", "FILL_RULE_EVEN_ODD",
+    "LINE_CAP_BUTT", "LINE_CAP_ROUND", "LINE_CAP_SQUARE",
+    "LINE_JOIN_MITER", "LINE_JOIN_ROUND", "LINE_JOIN_BEVEL",
+    "EXTEND_NONE", "EXTEND_REPEAT", "EXTEND_REFLECT", "EXTEND_PAD",
+    "OPERATOR_OVER", "OPERATOR_ADD", "OPERATOR_MULTIPLY", "OPERATOR_SCREEN",
+    "OPERATOR_DIFFERENCE", "OPERATOR_OVERLAY",
+    "ANTIALIAS_DEFAULT", "ANTIALIAS_NONE", "ANTIALIAS_GRAY",
+    "ANTIALIAS_SUBPIXEL", "ANTIALIAS_GOOD", "ANTIALIAS_BEST",
+)
+
+
+class _SafeCairo:
+    pass
+
+
+safe_cairo = _SafeCairo()
+for _name in _SAFE_CAIRO_ATTRS:
+    if hasattr(cairo, _name):
+        setattr(safe_cairo, _name, getattr(cairo, _name))
 
 WIDTH = {width}
 HEIGHT = {height}
@@ -116,8 +154,11 @@ _globals = {{
     "ctx": ctx,
     "WIDTH": WIDTH,
     "HEIGHT": HEIGHT,
+    "cairo": safe_cairo,
     "math": math,
     "random": random,
+    "colorsys": colorsys,
+    "itertools": itertools,
 }}
 
 exec(compile(_code, "<generated>", "exec"), _globals)
