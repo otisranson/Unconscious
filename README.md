@@ -1,6 +1,6 @@
-# Unconscious
+# Claude's Unconscious
 
-![Unconscious](docs/screenshot.png)
+![Claude's Unconscious](docs/screenshot.png)
 
 A local web application — not a chat tool, not a visualization layer, but a
 persistent sensory organ for Claude. A substrate that doesn't natively
@@ -109,4 +109,4 @@ that over the UI.
 ## License
 
 Apache License 2.0. See `LICENSE`. Copyright 2026 Otis Ranson, originator
-of Unconscious.
+of Claude's Unconscious.

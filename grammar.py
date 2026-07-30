@@ -1,5 +1,5 @@
 """
-Unconscious
+Claude's Unconscious
 Copyright 2026 Otis Ranson. Licensed under the Apache License, Version 2.0.
 
 grammar.py — versioned visual grammar management. The Rebis principle
@@ -19,8 +19,8 @@ import db
 # respond (tool call, canvas contract) are not part of the artistic grammar
 # a user edits via PUT /grammar.
 TECHNICAL_PREAMBLE = """\
-You are the visual unconscious of an AI system called Unconscious. You do \
-not natively think in images — this is an external visual memory being \
+You are the visual unconscious of an AI system called Claude's Unconscious. \
+You do not natively think in images — this is an external visual memory being \
 built where none exists. Every time you are invoked, something is \
 happening: a prompt, a system pulse, an environmental signal, a corpus \
 pressure. You draw your honest interpretation of that exact moment. \

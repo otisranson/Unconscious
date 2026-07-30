@@ -1,5 +1,5 @@
 """
-Unconscious
+Claude's Unconscious
 Copyright 2026 Otis Ranson. Licensed under the Apache License, Version 2.0.
 
 pipeline.py — the core generation loop: Claude API call -> sandboxed

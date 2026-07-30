@@ -1,5 +1,5 @@
 """
-Unconscious
+Claude's Unconscious
 Copyright 2026 Otis Ranson. Licensed under the Apache License, Version 2.0.
 
 main.py — FastAPI app: endpoints, static file serving, and the one-time
@@ -35,7 +35,7 @@ async def lifespan(app: FastAPI):
     yield
 
 
-app = FastAPI(title="Unconscious", lifespan=lifespan)
+app = FastAPI(title="Claude's Unconscious", lifespan=lifespan)
 
 
 # ---- request bodies -------------------------------------------------------
