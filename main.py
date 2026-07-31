@@ -67,11 +67,14 @@ def _entry_to_json(entry: dict) -> dict:
         "timestamp": entry["timestamp"],
         "prompt": entry["prompt"],
         "claude_caption": entry["claude_caption"],
+        "claude_caption_3d": entry["claude_caption_3d"],
         "user_annotation": entry["user_annotation"],
         "grammar_version": entry["grammar_version"],
         "source": entry["source"],
         "trigger": entry["trigger"],
+        "renderer": entry["renderer"],
         "image_url": f"/images/{entry['id']}",
+        "image_url_3d": f"/images/{entry['id']}/3d" if entry["image_path_3d"] else None,
     }
 
 
@@ -83,7 +86,7 @@ def create_prompt(body: PromptRequest):
         entry = pipeline.generate(source="prompt", trigger="user", prompt_text=body.prompt)
     except pipeline.MissingAPIKeyError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
-    except pipeline.CairoExecutionError as exc:
+    except pipeline.RenderExecutionError as exc:
         raise HTTPException(status_code=502, detail=str(exc)) from exc
     except anthropic.AuthenticationError as exc:
         raise HTTPException(
@@ -111,6 +114,10 @@ def delete_entry(entry_id: int):
     image_path = PROJECT_ROOT / deleted["image_path"]
     if image_path.exists():
         image_path.unlink()
+    if deleted["image_path_3d"]:
+        image_path_3d = PROJECT_ROOT / deleted["image_path_3d"]
+        if image_path_3d.exists():
+            image_path_3d.unlink()
     return {"deleted": entry_id}
 
 
@@ -120,6 +127,19 @@ def get_image(entry_id: int):
     if entry is None:
         raise HTTPException(status_code=404, detail="entry not found")
     image_path = PROJECT_ROOT / entry["image_path"]
+    if not image_path.exists():
+        raise HTTPException(status_code=404, detail="image file missing")
+    return FileResponse(image_path, media_type="image/png")
+
+
+@app.get("/images/{entry_id}/3d")
+def get_image_3d(entry_id: int):
+    entry = db.get_entry(entry_id)
+    if entry is None:
+        raise HTTPException(status_code=404, detail="entry not found")
+    if not entry["image_path_3d"]:
+        raise HTTPException(status_code=404, detail="no 3D render for this entry")
+    image_path = PROJECT_ROOT / entry["image_path_3d"]
     if not image_path.exists():
         raise HTTPException(status_code=404, detail="image file missing")
     return FileResponse(image_path, media_type="image/png")

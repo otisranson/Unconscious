@@ -14,6 +14,7 @@ DB_PATH = Path(__file__).parent / "unconscious.db"
 
 VALID_SOURCES = ("prompt", "dream", "environment", "system", "synthesis", "pressure")
 VALID_TRIGGERS = ("user", "startup")
+VALID_RENDERERS = ("cairo", "vedo", "both")
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS entries (
@@ -62,20 +63,40 @@ def get_conn():
 def init_db():
     with get_conn() as conn:
         conn.executescript(SCHEMA)
+        columns = {row["name"] for row in conn.execute("PRAGMA table_info(entries)")}
+        if "renderer" not in columns:
+            conn.execute(
+                "ALTER TABLE entries ADD COLUMN renderer TEXT NOT NULL DEFAULT 'cairo'"
+            )
+        if "vedo_code" not in columns:
+            conn.execute("ALTER TABLE entries ADD COLUMN vedo_code TEXT")
+        if "image_path_3d" not in columns:
+            conn.execute("ALTER TABLE entries ADD COLUMN image_path_3d TEXT")
+        if "claude_caption_3d" not in columns:
+            conn.execute("ALTER TABLE entries ADD COLUMN claude_caption_3d TEXT")
 
 
 # ---- entries ----------------------------------------------------------
 
 def insert_entry(timestamp, prompt, cairo_code, claude_caption, image_path,
-                  grammar_version, source, trigger, user_annotation=None):
+                  grammar_version, source, trigger, user_annotation=None,
+                  renderer="cairo", vedo_code=None, image_path_3d=None,
+                  claude_caption_3d=None):
+    """cairo_code/claude_caption/image_path always hold the 2D (pycairo)
+    interpretation; vedo_code/claude_caption_3d/image_path_3d hold the 3D
+    (vedo) one when present. Older entries made before both media were
+    generated every time have only one side populated, per `renderer`."""
     with get_conn() as conn:
         cur = conn.execute(
             """INSERT INTO entries
                (timestamp, prompt, cairo_code, claude_caption, user_annotation,
-                image_path, grammar_version, source, trigger)
-               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+                image_path, grammar_version, source, trigger, renderer,
+                vedo_code, image_path_3d, claude_caption_3d)
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
             (timestamp, prompt, cairo_code, claude_caption, user_annotation,
-             str(image_path), grammar_version, source, trigger),
+             str(image_path), grammar_version, source, trigger, renderer,
+             vedo_code, str(image_path_3d) if image_path_3d else None,
+             claude_caption_3d),
         )
         return get_entry(cur.lastrowid, conn=conn)
 
@@ -144,7 +165,9 @@ def set_annotation(entry_id, annotation):
 
 def delete_entry(entry_id):
     with get_conn() as conn:
-        row = conn.execute("SELECT image_path FROM entries WHERE id = ?", (entry_id,)).fetchone()
+        row = conn.execute(
+            "SELECT image_path, image_path_3d FROM entries WHERE id = ?", (entry_id,)
+        ).fetchone()
         conn.execute("DELETE FROM entries WHERE id = ?", (entry_id,))
         return dict(row) if row else None
 

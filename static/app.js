@@ -71,11 +71,24 @@ function renderEntryCard(entry) {
   const card = document.createElement("div");
   card.className = "entry-card" + (entry.trigger === "startup" ? " startup-arrival" : "");
 
-  const img = document.createElement("img");
-  img.src = entry.image_url;
-  img.alt = entry.claude_caption || entry.source;
-  img.addEventListener("click", () => window.open(entry.image_url, "_blank"));
-  card.appendChild(img);
+  const images = document.createElement("div");
+  images.className = "entry-images";
+
+  const img2d = document.createElement("img");
+  img2d.src = entry.image_url;
+  img2d.alt = entry.claude_caption || entry.source;
+  img2d.addEventListener("click", () => window.open(entry.image_url, "_blank"));
+  images.appendChild(img2d);
+
+  if (entry.image_url_3d) {
+    const img3d = document.createElement("img");
+    img3d.src = entry.image_url_3d;
+    img3d.alt = entry.claude_caption_3d || entry.source;
+    img3d.addEventListener("click", () => window.open(entry.image_url_3d, "_blank"));
+    images.appendChild(img3d);
+  }
+
+  card.appendChild(images);
 
   const body = document.createElement("div");
   body.className = "entry-body";

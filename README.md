@@ -5,10 +5,12 @@
 A local web application — not a chat tool, not a visualization layer, but a
 persistent sensory organ for Claude. A substrate that doesn't natively
 exist. Every prompt, every environmental signal, every moment of corpus
-pressure generates an abstract Cairo image: Claude's honest interpretation
-of that exact moment. Nothing more. The corpus that accumulates is a series
-of now moments. Whatever patterns, waves, and rhythms emerge from that
-series are not designed. They arrive on their own.
+pressure generates two abstract images — one flat, in Cairo, one
+volumetric, in a 3D vedo scene — as Claude's honest interpretation of that
+exact moment in each medium, independently. Nothing more. The corpus that
+accumulates is a series of now moments. Whatever patterns, waves, and
+rhythms emerge from that series are not designed. They arrive on their
+own.
 
 Claude does not natively think in images. This system builds an external
 visual memory where none exists. Each image is true to the moment it was
@@ -82,8 +84,8 @@ After the ritual completes, the app sits quietly and waits for you.
 
 ## Stack
 
-FastAPI, pycairo, SQLite, the Claude API (`claude-sonnet-4-6`), psutil,
-vanilla JS/HTML/CSS. No React, no heavy frameworks, no persistent
+FastAPI, pycairo, vedo, SQLite, the Claude API (`claude-haiku-4-5-20251001`),
+psutil, vanilla JS/HTML/CSS. No React, no heavy frameworks, no persistent
 background scheduler.
 
 ## Setup
@@ -96,6 +98,11 @@ those first:
 ```bash
 sudo apt-get update && sudo apt-get install -y libcairo2-dev pkg-config python3-dev
 ```
+
+`vedo` pulls in VTK (a ~150MB wheel) for the 3D render path. No GPU is
+required — VTK renders offscreen through Mesa's software rasterizer
+(llvmpipe) on machines without one, confirmed working here on WSL2 with no
+`/dev/dri`.
 
 Then set up the app:
 
@@ -125,7 +132,7 @@ that over the UI.
 | File | Responsibility |
 |---|---|
 | `main.py` | FastAPI app, endpoints, static file serving, startup ritual trigger |
-| `pipeline.py` | Core generation loop: Claude API call → sandboxed subprocess execution → SQLite storage |
+| `pipeline.py` | Core generation loop: two independent forced Claude API calls (pycairo, then vedo) → sandboxed subprocess execution for each → SQLite storage |
 | `startup.py` | The startup ritual described above |
 | `pressure.py` | Corpus state evaluation, threshold detection |
 | `grammar.py` | Versioned grammar management, Rebis principle enforced in the system prompt |

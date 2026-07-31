@@ -217,12 +217,18 @@ main {
   box-shadow: 0 0 0 1px rgba(106,127,201,0.15) inset;
 }
 
-.entry-card img {
+.entry-images {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.entry-images img {
   width: 120px;
   height: 120px;
   object-fit: cover;
   border-radius: 6px;
-  flex-shrink: 0;
   cursor: zoom-in;
 }
 
@@ -382,5 +388,5 @@ main {
   .now-result { flex-direction: column; }
   .now-result img { width: 100%; height: auto; }
   .entry-card { flex-direction: column; }
-  .entry-card img { width: 100%; height: 200px; }
+  .entry-images img { width: 100%; height: 200px; }
 }
