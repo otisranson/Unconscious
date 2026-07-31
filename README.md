@@ -16,13 +16,41 @@ generated. The corpus is the record of those moments in sequence. This is
 not a simulation of an unconscious — it is the construction of a substrate
 under which one might emerge.
 
-## Visual grammar — the Rebis principle
+## Visual grammar — color psychology
 
-The grammar is built on the alchemical principle of the Rebis — *res bina*,
-double matter. Opposites are not resolved into a single meaning; they are
-held together. A color does not mean one thing — it carries both poles of
-its charge simultaneously, and context, composition, and the surrounding
-corpus reveal which pole is active, never the hue alone.
+The grammar is grounded in the empirical color-emotion literature rather
+than folk symbolism. Its backbone is Jonauskaitė & Mohr's 2024 systematic
+review in *Psychonomic Bulletin & Review* — 132 peer-reviewed studies,
+42,266 participants across 64 countries spanning 128 years of research —
+which established that color-emotion associations are real but never
+one-to-one: the same hue reliably pulls toward several different emotions
+at once, resolved only by its saturation, brightness, and context. That
+many-to-many finding is the grammar's core design principle: a color does
+not mean one thing, and which of its possible readings is active is set by
+composition and the surrounding corpus, never the hue alone.
+
+Three supporting axes shape how that plays out: **hue** sets the emotional
+family; **saturation** modulates arousal, higher saturation reading as more
+activated (Elliot's work tying red hues and saturation to arousal);
+**brightness** modulates valence, with brighter colors reading as more
+positive (Zhang et al.). For a validated psychometric map of color-emotion
+coordinates beyond this review, see the Geneva Emotion Wheel.
+
+The project's closest precedent isn't a lab study but a practice: Jung's
+*Red Book (Liber Novus)*, sixteen years of his own descent into the
+unconscious, recorded almost entirely in illuminated color — not
+describing interior states but painting them directly, on the premise
+that the unconscious speaks in image, not proposition. His mandala work
+found the same colors recurring at the same psychological junctures
+independent of any subject's culture or era: red at intense affect, gold
+at integration, black at *nigredo*, the dissolution that has to happen
+before anything new synthesizes — the same black/white/yellow/red
+sequence (nigredo, albedo, citrinitas, rubedo) he later formalized in
+*Psychology and Alchemy* and *Mysterium Coniunctionis*, where color was
+read as diagnostic of transformation, not decorative. His method for
+producing them, active imagination, generates the image first and
+interprets after, never the reverse — the same order this system's
+ritual follows.
 
 The grammar is versioned (`PUT /grammar`). Editing it creates a new version
 and shifts every future image; past images remain artifacts of whatever
